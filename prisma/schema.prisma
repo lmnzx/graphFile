@@ -9,3 +9,45 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+generator typegraphql {
+  provider = "typegraphql-prisma"
+}
+
+model File {
+  id          String        @id @default(uuid())
+  name        String
+  directory   Directory     @relation(fields: [directoryId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  directoryId String
+  versions    FileVersion[]
+
+  @@map("files")
+}
+
+model FileVersion {
+  id        String   @id @default(uuid())
+  name      String
+  mimeType  String
+  size      Int
+  file      File     @relation(fields: [fileId], references: [id])
+  fileId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("file_versions")
+}
+
+model Directory {
+  id          String      @id @default(uuid())
+  name        String
+  parent      Directory?  @relation(fields: [parentId], references: [id], name: "DirectoryToDirectory")
+  parentId    String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  files       File[]
+  directories Directory[] @relation("DirectoryToDirectory")
+
+  @@map("directories")
+}

@@ -13,7 +13,7 @@ import { Context } from "./types/contex";
       prettyPrint: true,
     },
     disableRequestLogging: true,
-  });
+  }); // Create a new instance of Fastify.
 
   app.register(shutdownPlugin);
   app.register(prismaPlugin);
@@ -33,5 +33,5 @@ import { Context } from "./types/contex";
     }),
   });
 
-  await app.listen(3000);
+  await app.listen(3000); // Start the server
 })();
